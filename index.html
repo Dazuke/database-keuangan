@@ -1,176 +1,99 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Es Alpukat Segar</title>
-
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      min-height: 100vh;
-
-      /* BACKGROUND WALLPAPER */
-      background-image: url("wallpaper.png");
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-    }
-
-    /* OVERLAY BIAR NYATU */
-    .overlay {
-      min-height: 100vh;
-      background: rgba(0, 0, 0, 0.45);
-      backdrop-filter: blur(4px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 420px;
-      background: #ffffff;
-      border-radius: 14px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-      overflow: hidden;
-    }
-
-    .header {
-      background: linear-gradient(135deg, #2ecc71, #27ae60);
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-
-    .content {
-      padding: 20px;
-    }
-
-    label {
-      display: block;
-      margin-top: 15px;
-      font-weight: bold;
-    }
-
-    select {
-      width: 100%;
-      padding: 10px;
-      margin-top: 6px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-
-    .price {
-      margin-top: 20px;
-      font-size: 18px;
-      font-weight: bold;
-      text-align: center;
-    }
-
-    .btn {
-      margin-top: 15px;
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    .btn-wa {
-      background: #25D366;
-      color: white;
-    }
-
-    .qr {
-      text-align: center;
-      margin-top: 25px;
-    }
-
-    .qr img {
-      width: 200px;
-      border-radius: 10px;
-    }
-
-    .footer {
-      text-align: center;
-      padding: 15px;
-      font-size: 13px;
-      color: #777;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DeCash</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
 <body>
-  <div class="overlay">
-    <div class="container">
 
-      <div class="header">
-        <h2>🥑 Es Alpukat Segar</h2>
-        <p>Dingin, manis, masuk akal</p>
+  <div class="overlay"></div>
+
+  <div class="container">
+
+    <div class="atm-card">
+      <div>
+        <p class="mini-text">TOTAL SALDO</p>
+        <h1 id="totalBalance">Rp0</h1>
       </div>
 
-      <div class="content">
-        <label>Pilih Ukuran</label>
-        <select id="size" onchange="hitungHarga()">
-          <option value="10000">Kecil - Rp10.000</option>
-          <option value="13000">Sedang - Rp13.000</option>
-          <option value="16000">Besar - Rp16.000</option>
-        </select>
-
-        <label>Pilih Rasa</label>
-        <select id="flavor" onchange="hitungHarga()">
-          <option value="0">Original</option>
-          <option value="2000">Coklat +Rp2.000</option>
-          <option value="2000">Milo +Rp2.000</option>
-          <option value="3000">Keju +Rp3.000</option>
-        </select>
-
-        <div class="price" id="total">Total: Rp10.000</div>
-
-        <button class="btn btn-wa" onclick="orderWA()">Order via WhatsApp</button>
-
-        <div class="qr">
-          <p>Scan untuk bayar</p>
-          <img src="qr-payment.png" alt="QR Payment">
-        </div>
+      <div class="live-box">
+        <span class="live-dot"></span>
+        LIVE MONEY
       </div>
-
-      <div class="footer">
-        © 2026 Es Alpukat • Hidup berat, minum dulu
-      </div>
-
     </div>
+
+    <div class="progress-section glass">
+      <div class="progress-header">
+        <h2>Target Tabungan</h2>
+        <span id="progressText">Rp0 / Rp5.000.000</span>
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card income">
+        <p>Pemasukan</p>
+        <h3 id="incomeTotal">Rp0</h3>
+      </div>
+
+      <div class="stat-card expense">
+        <p>Pengeluaran</p>
+        <h3 id="expenseTotal">Rp0</h3>
+      </div>
+
+      <div class="stat-card invest">
+        <p>Investasi</p>
+        <h3 id="investTotal">Rp0</h3>
+      </div>
+    </div>
+
+    <div class="glass form-box">
+      <h2>Tambah Transaksi</h2>
+
+      <input type="text" id="desc" placeholder="Contoh: Kopi" />
+
+      <input type="number" id="amount" placeholder="Nominal" />
+
+      <select id="type">
+        <option value="income">Pemasukan</option>
+        <option value="expense">Pengeluaran</option>
+        <option value="invest">Investasi</option>
+      </select>
+
+      <button onclick="addTransaction()">Tambah</button>
+    </div>
+
+    <div class="glass filter-box">
+      <input type="text" id="searchInput" placeholder="Cari transaksi..." onkeyup="renderTransactions()" />
+
+      <select id="filterType" onchange="renderTransactions()">
+        <option value="all">Semua</option>
+        <option value="income">Pemasukan</option>
+        <option value="expense">Pengeluaran</option>
+        <option value="invest">Investasi</option>
+      </select>
+    </div>
+
+    <div class="glass history-box">
+      <div class="history-header">
+        <h2>Riwayat Transaksi</h2>
+
+        <button class="download-btn" onclick="downloadData()">
+          Download Backup
+        </button>
+      </div>
+
+      <div id="transactionList"></div>
+    </div>
+
   </div>
 
-<script>
-  function hitungHarga() {
-    const size = parseInt(document.getElementById("size").value);
-    const flavor = parseInt(document.getElementById("flavor").value);
-    const total = size + flavor;
-
-    document.getElementById("total").innerText =
-      "Total: Rp" + total.toLocaleString("id-ID");
-  }
-
-  function orderWA() {
-    const sizeText = document.getElementById("size").selectedOptions[0].text;
-    const flavorText = document.getElementById("flavor").selectedOptions[0].text;
-    const totalText = document.getElementById("total").innerText;
-
-    const pesan =
-      `Alo, aku ingin mesan fika%0A` +
-      `Ukuran: ${sizeText}%0A` +
-      `Rasa: ${flavorText}%0A` +
-      `${totalText}`;
-
-    const nomorWA = "6289688204332"; // ganti nomor
-    window.open(`https://wa.me/${nomorWA}?text=${pesan}`, "_blank");
-  }
-</script>
-
+  <script src="script.js"></script>
 </body>
 </html>
